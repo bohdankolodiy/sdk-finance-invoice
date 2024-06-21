@@ -1,0 +1,47 @@
+<div
+  class="sidebar"
+  [class.sidebar-collapsed]="collapsed()"
+  (click)="toggleCoppalse($event)"
+>
+  <div class="side-container mt-5">
+    <ul class="sidebar__nav">
+      <li class="sidebar__nav-item">
+        <a
+          class="sidebar__nav-link"
+          href="https://binariks.com/"
+          target="_blank"
+        >
+          <img
+            alt="logo"
+            class="sidebar__nav-icon"
+            src="/assets/icons/svg/binariks-logo.svg"
+          />
+          @if(collapsed()) {
+          <span class="sidebar__nav-text">Binariks</span>
+          }
+        </a>
+      </li>
+      <li class="sidebar__nav-item">
+        <a
+          class="sidebar__nav-link"
+          [routerLink]="['/front-office/invoices']"
+          routerLinkActive="active"
+        >
+          <img
+            alt="logo"
+            class="sidebar__nav-icon"
+            src="/assets/icons/svg/invoice.svg"
+          />
+          @if (collapsed()) {
+          <span class="sidebar__nav-text">Invoices</span>
+          }
+        </a>
+      </li>
+    </ul>
+  </div>
+  <div class="flex-footer" [class.active]="collapsed()">
+    <div class="flex-arrow" (click)="collapsed.set(!collapsed())">
+      <img src="/assets/icons/svg/sidebar-arrow.svg" />
+    </div>
+  </div>
+</div>
