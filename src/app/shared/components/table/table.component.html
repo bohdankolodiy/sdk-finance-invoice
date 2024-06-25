@@ -1,0 +1,67 @@
+<table class="{{ tableType }}">
+  <thead class="{{ tableType }}__header">
+    <tr class="{{ tableType }}__row">
+      <th
+        *ngFor="let header of tableData.headers"
+        class="{{ tableType }}__header-item"
+        [class.no-pointer]="!isSortTable || tableData.data.length < 2"
+      >
+        <span [class.dynamic]="header.dynamicColumn">{{
+          header.displayedName
+        }}</span>
+      </th>
+    </tr>
+  </thead>
+
+  <tbody
+    class="{{ tableType }}__body"
+    *ngIf="tableType !== 'accountant-table-employee'"
+  >
+    <ng-container *ngFor="let item of tableData.data; let i = index">
+      <tr
+        class="{{ tableType }}__row"
+        [class.tr_cursor]="tableType === 'emplDoyee'"
+      >
+        <td
+          *ngIf="tableType == 'accountant-table'"
+          class="{{ tableType }}__body_column"
+        >
+          {{ i + 1 }}
+        </td>
+        <ng-container *ngFor="let column of tableData.headers">
+          <td
+            class="{{ tableType }}__body-item"
+            [class.align-top]="column.dynamicColumn"
+          >
+            <span
+              class="content"
+              [class.clickable]="column.clickable"
+              [class.dynamic]="column.dynamicColumn"
+              (click)="
+                column.clickable &&
+                  onClickTableCell(
+                    $event,
+                    item.id,
+                    item[column.key],
+                    'detail-view'
+                  )
+              "
+            >
+              <ng-container
+                *ngIf="
+                  (item[column.key] | typeof) === 'number';
+                  else notANumber
+                "
+              >
+                {{ item[column.key] | number : "1.0-2" }}
+              </ng-container>
+              <ng-template #notANumber>
+                {{ item[column.key] }}
+              </ng-template>
+            </span>
+          </td>
+        </ng-container>
+      </tr>
+    </ng-container>
+  </tbody>
+</table>
