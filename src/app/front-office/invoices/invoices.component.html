@@ -1,1 +1,22 @@
-<p>invoices works!</p>
+<div class="employees">
+  <header class="employees__header">
+    <h2 class="employees__h2">Invoices list</h2>
+    <button
+      type="button"
+      class="button button__createInvoice employees__button"
+    >
+      Create invoice
+    </button>
+  </header>
+
+  <div class="employees__background-bottom">
+    <div class="employees__table" #tableWrapper>
+      <app-table
+        [tableType]="'employee'"
+        [headers]="headersCert"
+        [content]="dataCert"
+      >
+      </app-table>
+    </div>
+  </div>
+</div>
