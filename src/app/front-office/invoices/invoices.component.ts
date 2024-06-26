@@ -4,6 +4,8 @@ import { UITableHeader } from '../../shared/components/table/table.models';
 import { IInvoice } from '../../interfaces/invoice.interface';
 import { TableComponent } from '../../shared/components/table/table.component';
 import { InvoicesService } from '../../services/invoices.service';
+import { MatDialog } from '@angular/material/dialog';
+import { CreateInvoiceModalComponent } from '../../shared/components/create-invoice-modal/create-invoice-modal.component';
 
 @Component({
   selector: 'app-invoices',
@@ -25,7 +27,10 @@ export class InvoicesComponent implements OnInit {
 
   public dataCert: IInvoice[] = []; // data about employees with all fields(columns)
 
-  constructor(private invoicesService: InvoicesService) {}
+  constructor(
+    private invoicesService: InvoicesService,
+    public dialog: MatDialog
+  ) {}
 
   ngOnInit(): void {
     this.getInvoices();
@@ -42,6 +47,15 @@ export class InvoicesComponent implements OnInit {
           totalPrice: 0,
         },
       ];
+    });
+  }
+
+  openCreateInvoiceModal() {
+    console.log('dsfsdfs');
+
+    this.dialog.open(CreateInvoiceModalComponent, {
+      width: '250px',
+      disableClose: true
     });
   }
 }
