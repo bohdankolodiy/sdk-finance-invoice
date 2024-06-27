@@ -5,3 +5,9 @@ export interface IInvoice {
   status: 'string';
   totalPrice: 0;
 }
+
+export interface IInvoiceBody {
+  customerId: number,
+  startDate: string,
+  endDate: string
+}

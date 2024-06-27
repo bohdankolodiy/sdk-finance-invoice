@@ -1,9 +1,19 @@
 import { CommonModule } from '@angular/common';
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  ElementRef,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import { UITableHeader } from '../../shared/components/table/table.models';
 import { IInvoice } from '../../interfaces/invoice.interface';
 import { TableComponent } from '../../shared/components/table/table.component';
 import { InvoicesService } from '../../services/invoices.service';
+import { MatDialog } from '@angular/material/dialog';
+import { CreateInvoiceModalComponent } from '../../shared/components/create-invoice-modal/create-invoice-modal.component';
+import { filter, switchMap, tap } from 'rxjs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-invoices',
@@ -25,23 +35,37 @@ export class InvoicesComponent implements OnInit {
 
   public dataCert: IInvoice[] = []; // data about employees with all fields(columns)
 
-  constructor(private invoicesService: InvoicesService) {}
+  constructor(
+    private invoicesService: InvoicesService,
+    public dialog: MatDialog,
+    private destroyRef: DestroyRef
+  ) {}
 
   ngOnInit(): void {
     this.getInvoices();
   }
 
   getInvoices() {
-    this.invoicesService.getInvoices().subscribe((res) => {
-      this.dataCert = [
-        {
-          id: 'string',
-          name: 'string',
-          payerContact: 'string',
-          status: 'string',
-          totalPrice: 0,
-        },
-      ];
-    });
+    this.invoicesService
+      .getInvoices()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((res) => {
+        this.dataCert = res;
+      });
+  }
+
+  openCreateInvoiceModal() {
+    this.dialog
+      .open(CreateInvoiceModalComponent, {
+        width: '250px',
+        disableClose: true,
+      })
+      .afterClosed()
+      .pipe(
+        filter((res) => res),
+        takeUntilDestroyed(this.destroyRef),
+        switchMap((res) => this.invoicesService.createInvoices(res))
+      )
+      .subscribe(() => this.getInvoices());
   }
 }
