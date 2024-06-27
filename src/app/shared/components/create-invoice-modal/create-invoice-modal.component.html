@@ -26,13 +26,17 @@
           </label>
           <mat-form-field>
             <mat-label>Start Date</mat-label>
-            <input matInput [matDatepicker]="startPicker" disabled />
-            <mat-hint>MM/DD/YYYY</mat-hint>
+            <input
+              matInput
+              formControlName="startDate"
+              [matDatepicker]="startPicker"
+            />
+            <mat-hint>DD/MM/YYYY</mat-hint>
             <mat-datepicker-toggle
               matIconSuffix
               [for]="startPicker"
             ></mat-datepicker-toggle>
-            <mat-datepicker #startPicker disabled="false"></mat-datepicker>
+            <mat-datepicker #startPicker></mat-datepicker>
           </mat-form-field>
         </div>
         <div class="row align-items-center index-z">
@@ -50,8 +54,9 @@
               matInput
               formControlName="endDate"
               [matDatepicker]="endPicker"
+              [min]="startDate.value"
             />
-            <mat-hint>MM/DD/YYYY</mat-hint>
+            <mat-hint>DD/MM/YYYY</mat-hint>
             <mat-datepicker-toggle
               matIconSuffix
               [for]="endPicker"

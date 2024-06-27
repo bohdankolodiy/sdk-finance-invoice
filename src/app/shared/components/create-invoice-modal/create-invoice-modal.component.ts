@@ -5,7 +5,7 @@ import {
   transition,
   trigger,
 } from '@angular/animations';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import {
   MatDialogRef,
   MatDialogActions,
@@ -25,7 +25,12 @@ import { CommonModule } from '@angular/common';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { provideNativeDateAdapter } from '@angular/material/core';
+import {
+  MAT_DATE_LOCALE,
+  provideNativeDateAdapter,
+} from '@angular/material/core';
+import { Utils } from '../../utils/utils';
+import { IInvoiceBody } from '../../../interfaces/invoice.interface';
 
 @Component({
   selector: 'app-create-invoice-modal',
@@ -44,7 +49,10 @@ import { provideNativeDateAdapter } from '@angular/material/core';
   ],
   templateUrl: './create-invoice-modal.component.html',
   styleUrl: './create-invoice-modal.component.scss',
-  providers: [provideNativeDateAdapter()],
+  providers: [
+    provideNativeDateAdapter(),
+    { provide: MAT_DATE_LOCALE, useValue: 'fr' },
+  ],
   animations: [
     trigger('toggleDrawer', [
       state(
@@ -61,40 +69,49 @@ import { provideNativeDateAdapter } from '@angular/material/core';
         })
       ),
       transition('closed => opened', [animate('0.3s linear')]),
+      transition('opened => closed', [animate('0.3s linear')]),
     ]),
   ],
 })
-export class CreateInvoiceModalComponent implements OnInit, OnDestroy {
+export class CreateInvoiceModalComponent implements OnInit {
   isOpen: boolean = false;
-  isDatePickerOpened: boolean = false;
-  isoStartDate: Date | null = null;
   newInvoiceForm: FormGroup = new FormGroup({
-    startDate: new FormControl('', [Validators.required]),
-    endDate: new FormControl('', [Validators.required]),
+    startDate: new FormControl<Date | null>(null, [Validators.required]),
+    endDate: new FormControl<Date | null>(null, [Validators.required]),
   });
 
   get startDate(): AbstractControl {
     return this.newInvoiceForm.get('startDate')!;
   }
+  get endDate(): AbstractControl {
+    return this.newInvoiceForm.get('endDate')!;
+  }
+
   constructor(private dialogRef: MatDialogRef<CreateInvoiceModalComponent>) {}
 
   ngOnInit(): void {
-    setTimeout(() => {
-      this.isOpen = true;
-    }, 0);
-  }
-
-  ngOnDestroy(): void {
-    this.isOpen = false;
+    this.trigerAnimation(() => (this.isOpen = !this.isOpen), 0);
   }
 
   save() {
     if (this.newInvoiceForm.invalid) return;
-
-    this.dialogRef.close(this.newInvoiceForm.getRawValue());
+    this.cancel(this.modalBody);
   }
 
-  cancel() {
-    this.dialogRef.close();
+  get modalBody(): IInvoiceBody {
+    return {
+      customerId: 302,
+      startDate: Utils.formatDateToString([new Date(this.startDate.value)])!,
+      endDate: Utils.formatDateToString([new Date(this.endDate.value)])!,
+    };
+  }
+
+  trigerAnimation(callback: any, duration: number = 0) {
+    setTimeout(callback, duration);
+  }
+
+  cancel(body?: IInvoiceBody) {
+    this.isOpen = !this.isOpen;
+    this.trigerAnimation(() => this.dialogRef.close(body), 300);
   }
 }
