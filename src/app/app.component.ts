@@ -50,7 +50,7 @@ export class AppComponent implements OnInit {
             this.toastr.success(notifierObj.message);
             break;
           case NotifierTypes.error:
-            this.toastr.success(notifierObj.message);
+            this.toastr.error(notifierObj.message);
             break;
 
           default:

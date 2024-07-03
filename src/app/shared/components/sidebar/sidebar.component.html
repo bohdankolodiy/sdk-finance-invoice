@@ -14,7 +14,7 @@
           <img
             alt="logo"
             class="sidebar__nav-icon"
-            src="/assets/icons/svg/binariks-logo.svg"
+            src="assets/icons/svg/binariks-logo.svg"
           />
           @if(collapsed()) {
           <span class="sidebar__nav-text">Binariks</span>
@@ -24,13 +24,13 @@
       <li class="sidebar__nav-item">
         <a
           class="sidebar__nav-link"
-          [routerLink]="['/front-office/invoices']"
+          [routerLink]="[]"
           routerLinkActive="active"
         >
           <img
             alt="logo"
             class="sidebar__nav-icon"
-            src="/assets/icons/svg/invoice.svg"
+            src="assets/icons/svg/invoice.svg"
           />
           @if (collapsed()) {
           <span class="sidebar__nav-text">Invoices</span>
@@ -41,7 +41,7 @@
   </div>
   <div class="flex-footer" [class.active]="collapsed()">
     <div class="flex-arrow" (click)="collapsed.set(!collapsed())">
-      <img src="/assets/icons/svg/sidebar-arrow.svg" />
+      <img src="assets/icons/svg/sidebar-arrow.svg" />
     </div>
   </div>
 </div>

@@ -10,4 +10,9 @@ export const routes: Routes = [
     path: '**',
     redirectTo: 'front-office',
   },
+  {
+    path: '',
+    pathMatch: 'full',
+    redirectTo: 'front-office',
+  },
 ];
