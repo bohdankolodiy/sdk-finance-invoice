@@ -13,8 +13,7 @@ export const envStateKey = makeStateKey<{ API_URL: string }>('env');
 export function transferStateFactory(transferState: TransferState) {
   return () => {
     const envVars = {
-      API_URL:
-        'http://internaltoolapp-env.eba-9zrem8we.us-east-1.elasticbeanstalk.com',
+      API_URL: 'https://apimtt.binariks.net',
       // Add more environment variables as needed
     };
     transferState.set<any>(envStateKey, envVars);
