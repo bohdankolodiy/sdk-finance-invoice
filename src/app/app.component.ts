@@ -1,18 +1,19 @@
 import { Component, DestroyRef, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterOutlet } from '@angular/router';
-import { NotifierModule, NotifierService } from 'angular-notifier';
 import { LoaderComponent } from './shared/components/loader/loader.component';
 import { SpinnerService } from './services/spinner.service';
 import { delay } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NotifyService } from './services/notify.service';
 import { INotifier } from './interfaces/notifier.interface';
+import { ToastrService } from 'ngx-toastr';
+import { NotifierTypes } from './enums/notifier-type.enum';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, RouterOutlet, NotifierModule, LoaderComponent],
+  imports: [CommonModule, RouterOutlet, LoaderComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
 })
@@ -22,7 +23,7 @@ export class AppComponent implements OnInit {
 
   constructor(
     private spinner: SpinnerService,
-    private notifier: NotifierService,
+    private toastr: ToastrService,
     private notify: NotifyService,
     private destroyRef: DestroyRef
   ) {}
@@ -44,7 +45,19 @@ export class AppComponent implements OnInit {
     this.notify.notifySub
       .pipe(delay(0), takeUntilDestroyed(this.destroyRef))
       .subscribe((notifierObj: INotifier) => {
-        this.notifier.notify(notifierObj.type, notifierObj.message);
+        switch (notifierObj.type) {
+          case NotifierTypes.success:
+            this.toastr.success(notifierObj.message);
+            break;
+          case NotifierTypes.error:
+            this.toastr.success(notifierObj.message);
+            break;
+
+          default:
+            this.toastr.warning(notifierObj.message);
+
+            break;
+        }
       });
   }
 }
