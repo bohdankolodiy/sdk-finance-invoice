@@ -1,0 +1,182 @@
+/* stylelint-disable */
+
+@import "./variables/color-variables";
+
+/* buttons */
+.button {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  // button add normal
+
+  /* button lightblue without background */
+  &__lightblue {
+    font-weight: 700;
+    font-size: 14px;
+    line-height: 16px;
+    color: $color-blue;
+
+    &:hover {
+      color: $color-dark-blue;
+    }
+  }
+
+  /* button underline normal */
+  &__underline {
+    font-weight: 400;
+    font-size: 12px;
+    line-height: 14px;
+    text-decoration-line: underline;
+    color: $color-grey;
+
+    /* button underline hover */
+    &:hover {
+      font-weight: 500;
+    }
+  }
+
+  /* button small normal */
+  &__small {
+    font-weight: 400;
+    font-size: 12px;
+    line-height: 14px;
+    color: $color-blue;
+
+    /* button small hover */
+    &:hover {
+      font-weight: 500;
+    }
+  }
+
+  /* button cancel normal */
+  &__cancel {
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 19px;
+    color: $color-grey;
+
+    /* button cancel hover */
+    &:hover {
+      color: $color-black;
+    }
+  }
+
+  /* button decline normal */
+  &__decline {
+    font-weight: 700;
+    font-size: 15px;
+    line-height: 18px;
+    color: $color-decline;
+
+    /* button decline hover */
+    &:hover {
+      color: $color-decline-hover;
+    }
+  }
+
+  &__save {
+    height: 40px;
+    padding: 11px 21px;
+    font-size: 15px;
+    color: $color-intense-white;
+    font-style: normal;
+    font-weight: 700;
+    letter-spacing: 0;
+    line-height: 18px;
+    text-align: center;
+    background: linear-gradient(
+      270deg,
+      $color-blue 0%,
+      $color-button-opacity-blue 100%
+    );
+    box-shadow: $box-shadow-button;
+    border-radius: 38px;
+
+    &:hover {
+      box-shadow: none;
+      border-radius: 60px;
+      background-color: $color-blue;
+    }
+
+    &[disabled] {
+      background: linear-gradient(
+        270deg,
+        $color-blue-pale 21.81%,
+        $color-button-opacity-blue 100%
+      );
+      border-radius: 60px;
+      box-shadow: none;
+    }
+
+    &__topRight {
+      position: absolute;
+      width: max-content;
+      top: 3%;
+      right: 0;
+    }
+  }
+
+  &__createInvoice {
+    height: 40px;
+    padding: 10px 30px;
+    font-weight: 700;
+    font-size: 15px;
+    line-height: 18px;
+    color: $color-intense-white;
+    background: linear-gradient(
+      270deg,
+      $color-blue 0%,
+      $color-button-opacity-blue 100%
+    );
+    box-shadow: $box-shadow-button;
+    border-radius: 60px;
+
+    &:hover {
+      background-color: $color-blue;
+    }
+
+    &[disabled] {
+      background: linear-gradient(
+        270deg,
+        $color-blue-pale 21.81%,
+        $color-button-disabled 100%
+      );
+    }
+
+    span {
+      font-weight: 500;
+      font-size: 24px;
+      margin-right: 10px;
+      vertical-align: top;
+    }
+  }
+
+  &.remove-filter {
+    box-sizing: border-box;
+    border: 1px solid $color-blue;
+    width: 30px;
+    height: 16px;
+    border-radius: 6px;
+    margin-left: 5px;
+  }
+}
+
+%extend-buttons {
+  background: $color-blue;
+  box-shadow: $box-shadow-button;
+  border-radius: 5px;
+  font-weight: 700;
+  font-size: 15px;
+  line-height: 18px;
+  color: $color-intense-white;
+
+  &:hover {
+    box-shadow: none;
+    background-color: $color-blue-other;
+  }
+}
