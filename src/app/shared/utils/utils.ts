@@ -23,15 +23,15 @@ import {
 const formatDateToString = (date: string | null | [Date]): string | null => {
   return date === null || typeof date === 'string'
     ? date
-    : DateTime.fromJSDate(date[0]).toFormat('dd/LL/yyyy');
+    : DateTime.fromJSDate(date[0]).toFormat('yyyy-MM-dd');
 };
 
 const formatStringToDate = (date: string): Date => {
-  return DateTime.fromFormat(date, 'dd/LL/yyyy').toJSDate();
+  return DateTime.fromFormat(date, 'yyyy-LL-dd').toJSDate();
 };
 
 const formatStringToDateTime = (date: string): DateTime => {
-  return DateTime.fromFormat(date, 'dd/LL/yyyy');
+  return DateTime.fromFormat(date, 'yyyy-LL-dd');
 };
 
 const isToday = (date: DateTime): boolean => {

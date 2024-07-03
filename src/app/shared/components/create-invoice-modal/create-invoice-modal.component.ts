@@ -25,12 +25,22 @@ import { CommonModule } from '@angular/common';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import {
-  MAT_DATE_LOCALE,
-  provideNativeDateAdapter,
-} from '@angular/material/core';
+
 import { Utils } from '../../utils/utils';
 import { IInvoiceBody } from '../../../interfaces/invoice.interface';
+import { provideMomentDateAdapter } from '@angular/material-moment-adapter';
+
+export const MY_FORMATS = {
+  parse: {
+    dateInput: 'yyyy-MM-DD',
+  },
+  display: {
+    dateInput: 'yyyy-MM-DD',
+    monthYearLabel: 'yyyy',
+    dateA11yLabel: 'yyyy-MM-DD',
+    monthYearA11yLabel: 'yyyy',
+  },
+};
 
 @Component({
   selector: 'app-create-invoice-modal',
@@ -49,10 +59,7 @@ import { IInvoiceBody } from '../../../interfaces/invoice.interface';
   ],
   templateUrl: './create-invoice-modal.component.html',
   styleUrl: './create-invoice-modal.component.scss',
-  providers: [
-    provideNativeDateAdapter(),
-    { provide: MAT_DATE_LOCALE, useValue: 'fr' },
-  ],
+  providers: [provideMomentDateAdapter(MY_FORMATS)],
   animations: [
     trigger('toggleDrawer', [
       state(
