@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "sdk.finance-invoice": {
+    "sdk-finance-invoice": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -17,7 +17,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:application",
           "options": {
-            "outputPath": "dist/sdk.finance-invoice",
+            "outputPath": "dist/sdk-finance-invoice",
             "index": "src/index.html",
             "browser": "src/main.ts",
             "polyfills": ["zone.js"],
@@ -60,10 +60,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "sdk.finance-invoice:build:production"
+              "buildTarget": "sdk-finance-invoice:build:production"
             },
             "development": {
-              "buildTarget": "sdk.finance-invoice:build:development"
+              "buildTarget": "sdk-finance-invoice:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -71,7 +71,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "buildTarget": "sdk.finance-invoice:build"
+            "buildTarget": "sdk-finance-invoice:build"
           }
         },
         "test": {
