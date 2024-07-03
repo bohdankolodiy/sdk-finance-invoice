@@ -20,7 +20,7 @@ export class InvoicesService {
   }
 
   createInvoices(body: IInvoiceBody): Observable<unknown> {
-    return this.http.post(`${this.apiPath}/sdk-finance/invoice`, body).pipe(
+    return this.http.post(`${this.apiPath}/sdk-finance/invoice?customerId=${body.customerId}&end=${body.endDate}&start=${body.startDate}`, body).pipe(
       tap(() =>
         this.notifier.notifySub.next({
           type: 'success',
