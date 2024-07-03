@@ -18,7 +18,7 @@ import { NotifierTypes } from './enums/notifier-type.enum';
   styleUrl: './app.component.scss',
 })
 export class AppComponent implements OnInit {
-  title = 'sdk.finance-invoice';
+  title = 'sdk-finance-invoice';
   loading: boolean = false;
 
   constructor(
