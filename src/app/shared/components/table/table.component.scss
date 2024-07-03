@@ -1,0 +1,130 @@
+@import "../../../../assets/scss/styles";
+
+.icon-dots-vertical {
+  cursor: pointer;
+  font-size: 22px;
+}
+
+.icon-pencil {
+  cursor: pointer;
+  font-size: 16px;
+  margin-left: 5px;
+  position: absolute;
+  top: 50%;
+  translate: 0 -50%;
+}
+
+.contextual__menu {
+  position: relative;
+  left: -18px;
+  top: 5px;
+}
+
+.context__body {
+  display: none;
+  cursor: pointer;
+  border: 1px solid gray;
+  position: absolute;
+  top: 2px;
+  font-size: 12px;
+  z-index: 10;
+  background-color: $color-intense-white;
+}
+
+.contextual__menu.active > .context__body {
+  display: block;
+}
+
+.context__item {
+  padding: 5px;
+  width: 80px;
+}
+
+.context__item img {
+  width: 20px;
+  height: 20px;
+}
+
+.employee {
+  min-width: 890px;
+  position: relative;
+  border-collapse: collapse;
+  width: 100%;
+
+  &__header {
+    font-size: 16px;
+    position: sticky;
+    top: 0;
+    background: $color-table-employees;
+
+    &::after {
+      position: absolute;
+      content: "";
+      display: block;
+      height: 2px;
+      width: 100%;
+      background-color: $color-opacity-blue;
+    }
+
+    &.employee__trash::after {
+      width: 95%;
+    }
+
+    &-item {
+      cursor: pointer;
+      padding-left: 16px;
+      padding-bottom: 8px;
+      padding-top: 8px;
+      color: $color-dark-blue;
+      font-weight: 500;
+      text-align: left;
+    }
+  }
+
+  &__row {
+    td {
+      border-bottom: 5px solid $color-opacity-gray;
+      background-color: $color-intense-white;
+    }
+  }
+
+  &__body {
+    color: $color-black;
+
+    &-item {
+      font-size: 14px;
+      font-weight: 400;
+      padding: 16px 0 16px 18px;
+
+      &:last-child {
+        padding-right: 10px;
+      }
+    }
+  }
+}
+
+.table__btn {
+  position: absolute;
+  bottom: -15px;
+  left: 0;
+}
+
+.icon-polygon {
+  font-size: 6px;
+}
+
+.tr_cursor {
+  cursor: pointer;
+}
+
+.test {
+  display: none;
+}
+
+.test.display {
+  display: block;
+}
+
+.clickable {
+  cursor: pointer;
+}

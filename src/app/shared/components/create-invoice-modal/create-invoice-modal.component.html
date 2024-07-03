@@ -1,0 +1,80 @@
+<!-- <div class="body" >
+    <button mat-button mat-dialog-close>No</button>
+</div> -->
+
+<div
+  class="dialog-main__container"
+  [@toggleDrawer]="isOpen ? 'opened' : 'closed'"
+>
+  <div class="dialog-header__container">
+    <h3 class="dialog-header__title">Create invoice</h3>
+  </div>
+
+  <!---------- main content ---------->
+
+  <div class="dialog-content__container w-100">
+    <form [formGroup]="newInvoiceForm">
+      <div class="maternity">
+        <div class="row align-items-center index-z">
+          <label
+            class="label-input mb-3"
+            appMarkAsterisk
+            [formGroup]="newInvoiceForm"
+            [controlName]="'startDate'"
+            [touched]="newInvoiceForm.get('startDate')!.touched"
+            >Start date
+          </label>
+          <mat-form-field>
+            <mat-label>Start Date</mat-label>
+            <input
+              matInput
+              formControlName="startDate"
+              [matDatepicker]="startPicker"
+            />
+            <mat-hint>YYYY-MM-DD</mat-hint>
+            <mat-datepicker-toggle
+              matIconSuffix
+              [for]="startPicker"
+            ></mat-datepicker-toggle>
+            <mat-datepicker #startPicker></mat-datepicker>
+          </mat-form-field>
+        </div>
+        <div class="row align-items-center index-z">
+          <label
+            class="label-input col-4 mb-3"
+            appMarkAsterisk
+            [formGroup]="newInvoiceForm"
+            [controlName]="'endDate'"
+            [touched]="newInvoiceForm.get('endDate')!.touched"
+            >End date
+          </label>
+          <mat-form-field>
+            <mat-label>End date</mat-label>
+            <input
+              matInput
+              formControlName="endDate"
+              [matDatepicker]="endPicker"
+              [min]="startDate.value"
+            />
+            <mat-hint>YYYY-MM-DD</mat-hint>
+            <mat-datepicker-toggle
+              matIconSuffix
+              [for]="endPicker"
+            ></mat-datepicker-toggle>
+            <mat-datepicker #endPicker></mat-datepicker>
+          </mat-form-field>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <!--  save/cancel buttons -->
+  <div class="row justify-content-end dialog-button__container pt-3">
+    <div class="col-auto p-0">
+      <button class="button button__save add-margin" (click)="save()">
+        Save
+      </button>
+      <button class="button button__cancel" (click)="cancel()">Cancel</button>
+    </div>
+  </div>
+</div>

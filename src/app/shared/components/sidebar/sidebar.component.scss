@@ -1,0 +1,146 @@
+@import "../../../../assets/scss/styles";
+
+.sidebar {
+  @include flex-box(column, wrap, space-between, initial);
+
+  background: $color-dark-blue;
+  transition: all 0.5s ease;
+  z-index: 1;
+  @include size(5rem, calc(100%));
+  min-height: calc(100vh);
+  padding-bottom: 10px;
+
+  &__nav {
+    list-style: none;
+    padding: 1rem;
+    padding-bottom: 0;
+    margin: 0;
+    margin-bottom: 1rem;
+    @include flex-box(column, wrap, initial, center);
+
+    &-item {
+      width: 100%;
+      margin-bottom: 0.625rem;
+      cursor: pointer;
+    }
+
+    &-text {
+      margin-left: 5%;
+      font-weight: 400;
+      font-size: 14px;
+      height: 17px;
+      overflow: hidden;
+      color: $color-intense-white;
+    }
+
+    &-link {
+      @include flex-box(row, nowrap, center, center);
+      position: relative;
+      height: 3rem;
+      text-decoration: none;
+      transition: color 0.3s ease;
+
+      &.active {
+        background-color: $color-blue-darker;
+        border-radius: 3px;
+
+        & > img {
+          filter: brightness(0) saturate(100%) invert(13%) sepia(51%)
+            saturate(2610%) hue-rotate(200deg) brightness(100%) contrast(97%);
+
+          &:hover {
+            filter: brightness(0) saturate(100%) invert(100%) sepia(0%)
+              saturate(0%) hue-rotate(162deg) brightness(106%) contrast(101%);
+          }
+        }
+
+        .sidebar__nav-text {
+          color: $color-dark-blue;
+        }
+      }
+    }
+
+    &-icon {
+      min-width: 30px;
+      transition: all 0.3s ease;
+      filter: brightness(0) saturate(100%) invert(100%) sepia(0%) saturate(0%)
+        hue-rotate(162deg) brightness(106%) contrast(101%);
+
+      &:hover {
+        filter: brightness(0) saturate(100%) invert(37%) sepia(60%)
+          saturate(490%) hue-rotate(177deg) brightness(95%) contrast(99%);
+      }
+    }
+  }
+}
+
+.sidebar-collapsed {
+  width: 190px;
+  overflow: hidden;
+
+  .logo-container {
+    justify-content: left;
+    padding-left: 35px;
+  }
+
+  .sidebar__nav-link {
+    padding-left: 20px;
+    justify-content: left;
+  }
+}
+
+.btn__log-out {
+  font-weight: bold;
+  font-size: 0.75rem;
+  text-align: center;
+  color: #fff;
+  transition: all 0.2s ease-out;
+  @include flex-box(row, wrap, center, center);
+  display: flex;
+  border: 0;
+  outline: none;
+  cursor: pointer;
+  padding: 0;
+  background: transparent;
+  width: 100%;
+
+  &:hover {
+    color: $color-blue-darker;
+  }
+}
+
+.flex-footer {
+  @include flex-box(row, wrap, initial, center);
+  position: relative;
+
+  .flex-arrow {
+    transition: rotate 0.4s ease, right 0.4s linear;
+    padding: 5px 5px 2px 5px;
+    position: absolute;
+    cursor: pointer;
+    right: 50%;
+    translate: 50%;
+    top: -40px;
+
+    &:hover {
+      background: #113673;
+      border-radius: 3px;
+
+      img {
+        filter: brightness(0) saturate(100%) invert(100%) sepia(4%)
+          saturate(97%) hue-rotate(179deg) brightness(115%) contrast(100%);
+      }
+    }
+  }
+
+  &.active {
+    position: relative;
+    right: 0;
+    align-items: flex-end;
+
+    .flex-arrow {
+      right: 15%;
+      transform: rotate(-180deg);
+    }
+  }
+}

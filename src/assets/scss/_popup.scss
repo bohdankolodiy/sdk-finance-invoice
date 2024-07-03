@@ -1,0 +1,96 @@
+@import "./variables/color-variables";
+
+/******** general style *********/
+
+.dialog-main__container {
+  overflow: hidden;
+}
+
+/* header style */
+
+.dialog-header__container {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 12px;
+
+  .dialog-header__title {
+    display: flex;
+    align-items: center;
+    margin: 0;
+    padding: 0;
+    font-weight: bold;
+    font-size: 24px;
+    color: $color-black;
+  }
+}
+
+/******** content style *********/
+
+.dialog-content__container {
+  box-sizing: border-box;
+
+  label {
+    float: left;
+    font-size: 12px;
+    color: $color-grey;
+    padding-right: 15px;
+  }
+}
+
+.flex_container {
+  display: flex;
+  align-items: center;
+  float: left;
+}
+
+.input-wrapper {
+  width: 142px;
+  display: flex;
+}
+
+.date_input {
+  display: flex;
+  background: transparent;
+  border: 0.5px solid $color-blue;
+  border-radius: 2px;
+  width: 111px;
+  height: 22px;
+  margin-left: 15px;
+  padding: 4px 8px;
+}
+
+/******** button styles *********/
+
+.dialog-button__container {
+  padding-right: 20px;
+
+  .add-margin {
+    margin-right: 40px;
+  }
+}
+
+/******** textarea style *********/
+
+textarea {
+  background: $color-bright-gray;
+  border: 0.3px solid $color-opacity-nepal;
+  border-radius: 6px;
+  width: 402px;
+  height: 110px;
+}
+
+::-webkit-resizer {
+  display: none;
+}
+
+/* scrollbar styles */
+
+::-webkit-scrollbar {
+  width: 5px;
+  background-color: $color-scroll-ball;
+}
+
+::-webkit-scrollbar-thumb {
+  background: $color-scroll-slider;
+  border-radius: 6px;
+}
