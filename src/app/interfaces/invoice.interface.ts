@@ -7,7 +7,13 @@ export interface IInvoice {
 }
 
 export interface IInvoiceBody {
-  customerId: number,
-  startDate: string,
-  endDate: string
+  customerId: number;
+  startDate: string;
+  endDate: string;
+}
+
+export interface ICalculateHoursBody {
+  customerId: number;
+  startDate: string;
+  endDate: string;
 }

@@ -16,7 +16,7 @@ export interface UITableHeader {
 export interface UIDynamicTable {
   headers: UITableHeader[];
   data: any[];
-  total: any;
+  total?: any;
 }
 
 export enum columnTypes {
