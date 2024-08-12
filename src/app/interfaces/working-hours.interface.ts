@@ -21,4 +21,5 @@ export interface IWorkingHours {
 export interface IEmployeeRate {
   id: number;
   rate: number;
+  taskId: number;
 }

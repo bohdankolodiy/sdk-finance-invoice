@@ -76,6 +76,7 @@ export class WorkingHoursTableComponent implements ControlValueAccessor {
       this.employees.push(
         new FormGroup({
           id: new FormControl(res.employeeFullName.id),
+          taskId: new FormControl(res.taskNameAndId.id),
           rate: new FormControl<number | null>(null, Validators.required),
         })
       );

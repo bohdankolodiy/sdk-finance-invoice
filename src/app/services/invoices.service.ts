@@ -9,6 +9,7 @@ import {
 import { envStateKey } from '../app.config.server';
 import { NotifyService } from './notify.service';
 import { IWorkingHours } from '../interfaces/working-hours.interface';
+import { IProject } from '../interfaces/project.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -25,26 +26,23 @@ export class InvoicesService {
   }
 
   createInvoices(body: IInvoiceBody): Observable<unknown> {
-    return this.http
-      .post(
-        `${this.apiPath}/sdk-finance/invoice?customerId=${body.customerId}&end=${body.endDate}&start=${body.startDate}`,
-        body
+    return this.http.post(`${this.apiPath}/sdk-finance/invoice`, body).pipe(
+      tap(() =>
+        this.notifier.notifySub.next({
+          type: 'success',
+          message: 'Invoice was created',
+        })
       )
-      .pipe(
-        tap(() =>
-          this.notifier.notifySub.next({
-            type: 'success',
-            message: 'Invoice was created',
-          })
-        )
-      );
+    );
   }
 
-  generateProjectHours(
-    body: ICalculateHoursBody
-  ): Observable<IWorkingHours[]> {
+  getProjects(): Observable<IProject[]> {
+    return this.http.get<IProject[]>(`${this.apiPath}/sdk-finance/projects`);
+  }
+
+  generateProjectHours(body: ICalculateHoursBody): Observable<IWorkingHours[]> {
     return this.http.post<IWorkingHours[]>(
-      `${this.apiPath}/sdk-finance/invoice/calculate?customerId=${body.customerId}&end=${body.endDate}&start=${body.startDate}`,
+      `${this.apiPath}/sdk-finance/invoice/calculate`,
       body
     );
   }
