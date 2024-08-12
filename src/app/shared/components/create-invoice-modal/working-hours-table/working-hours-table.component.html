@@ -1,0 +1,45 @@
+<table class="employee" [formGroup]="ratesForm">
+  <thead class="employee__header">
+    <tr class="employee__row">
+      @for ( header of tableData.headers; track header) {
+      <th class="employee__header-item">
+        <span [class.dynamic]="header.dynamicColumn">{{
+          header.displayedName
+        }}</span>
+      </th>
+      }
+    </tr>
+  </thead>
+  <tbody class="employee__body" formArrayName="employee">
+    @for (item of tableData.data; track item.id; let i=$index) {
+    <tr class="employee__row" [formGroupName]="i">
+      @for (column of tableData.headers; track column) {
+      <td class="employee__body-item" [class.align-top]="column.dynamicColumn">
+        @if (column.key === 'rate') {
+        <input
+          class="rate-input"
+          [class.invalid]="employees.controls[i].invalid"
+          type="text"
+          matInput
+          formControlName="rate"
+        />
+
+        } @else {
+        <span
+          class="content"
+          [class.clickable]="column.clickable"
+          [class.dynamic]="column.dynamicColumn"
+        >
+          @switch (item[column.key] | typeof) { @case ('number') {
+          {{ item[column.key] | number : "1.0-2" }}
+          } @case ('object') {
+          {{ item[column.key].name }}
+          } @default { {{ item[column.key] }}} }
+        </span>
+        }
+      </td>
+      }
+    </tr>
+    }
+  </tbody>
+</table>
