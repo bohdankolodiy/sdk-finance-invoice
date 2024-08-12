@@ -5,7 +5,7 @@ import {
   transition,
   trigger,
 } from '@angular/animations';
-import { Component, OnInit } from '@angular/core';
+import { Component, DestroyRef, OnInit } from '@angular/core';
 import {
   MatDialogRef,
   MatDialogActions,
@@ -27,8 +27,22 @@ import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 
 import { Utils } from '../../utils/utils';
-import { IInvoiceBody } from '../../../interfaces/invoice.interface';
+import {
+  ICalculateHoursBody,
+  IInvoiceBody,
+} from '../../../interfaces/invoice.interface';
 import { provideMomentDateAdapter } from '@angular/material-moment-adapter';
+import { InvoicesService } from '../../../services/invoices.service';
+import { MatSelectModule } from '@angular/material/select';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { UITableHeader } from '../table/table.models';
+import {
+  IEmployeeRate,
+  IWorkingHours,
+} from '../../../interfaces/working-hours.interface';
+import { WorkingHoursTableComponent } from './working-hours-table/working-hours-table.component';
+import { IProject } from '../../../interfaces/project.interface';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 export const MY_FORMATS = {
   parse: {
@@ -56,6 +70,9 @@ export const MY_FORMATS = {
     MatFormFieldModule,
     MatInputModule,
     MatDatepickerModule,
+    MatSelectModule,
+    MatTooltipModule,
+    WorkingHoursTableComponent,
   ],
   templateUrl: './create-invoice-modal.component.html',
   styleUrl: './create-invoice-modal.component.scss',
@@ -81,40 +98,147 @@ export const MY_FORMATS = {
   ],
 })
 export class CreateInvoiceModalComponent implements OnInit {
-  isOpen: boolean = false;
-  newInvoiceForm: FormGroup = new FormGroup({
+  public isOpen: boolean = false;
+  public projectLists: IProject[] = [];
+  public generated: boolean = false;
+
+  public headersCert: UITableHeader[] = [
+    { key: 'taskNameAndId', index: 0, displayedName: 'Task' },
+    { key: 'employeeFullName', index: 1, displayedName: 'Name' },
+    { key: 'billableHours', index: 2, displayedName: 'Hours' },
+    { key: 'rate', index: 3, displayedName: 'Rate' },
+  ];
+
+  public dataCert: IWorkingHours[] = []; // data about employees with all fields(columns)
+
+  public newInvoiceForm: FormGroup = new FormGroup({
     startDate: new FormControl<Date | null>(null, [Validators.required]),
     endDate: new FormControl<Date | null>(null, [Validators.required]),
+    project: new FormControl(null, [Validators.required]),
+    rates: new FormControl(),
   });
 
   get startDate(): AbstractControl {
     return this.newInvoiceForm.get('startDate')!;
   }
+
   get endDate(): AbstractControl {
     return this.newInvoiceForm.get('endDate')!;
   }
 
-  constructor(private dialogRef: MatDialogRef<CreateInvoiceModalComponent>) {}
-
-  ngOnInit(): void {
-    this.trigerAnimation(() => (this.isOpen = !this.isOpen), 0);
+  get project(): AbstractControl {
+    return this.newInvoiceForm.get('project')!;
   }
 
-  save() {
-    if (this.newInvoiceForm.invalid) return;
-    this.cancel(this.modalBody);
+  get rates(): AbstractControl {
+    return this.newInvoiceForm.get('rates')!;
   }
 
   get modalBody(): IInvoiceBody {
+    const result = this.rates.value.reduce((acc: any, item: IEmployeeRate) => {
+      acc[item.id] = Number(item.rate);
+      return acc;
+    }, {});
     return {
-      customerId: 302,
-      startDate: Utils.formatDateToString([new Date(this.startDate.value)])!,
-      endDate: Utils.formatDateToString([new Date(this.endDate.value)])!,
+      start: Utils.formatDateToString([new Date(this.startDate.value)])!,
+      end: Utils.formatDateToString([new Date(this.endDate.value)])!,
+      projectId: this.project.value.id,
+      employeeRate: {
+        ...result,
+      },
     };
+  }
+
+  get calculateBody(): ICalculateHoursBody {
+    return {
+      start: Utils.formatDateToString([new Date(this.startDate.value)])!,
+      end: Utils.formatDateToString([new Date(this.endDate.value)])!,
+      projectId: this.project.value.id,
+    };
+  }
+
+  get errorMessage(): string {
+    return this.newInvoiceForm.invalid
+      ? 'Please fill all fields & generate working hours'
+      : 'Please fill rate for all employees';
+  }
+
+  get isFormInvalid(): boolean {
+    return (
+      this.newInvoiceForm.invalid ||
+      !this.generated ||
+      !(this.rates.value || []).every(
+        (el: IEmployeeRate) => Number(el.rate) >= 0
+      )
+    );
+  }
+
+  get total(): number {
+    return this.dataCert.reduce((total, currentValue) => {
+      return (
+        total +
+        this.transformBillableHoursToNumber(currentValue.billableHours) *
+          this.getEmployeeRate(currentValue)
+      );
+    }, 0);
+  }
+
+  constructor(
+    private dialogRef: MatDialogRef<CreateInvoiceModalComponent>,
+    private invoiceService: InvoicesService,
+    private destroyRef: DestroyRef
+  ) {}
+
+  ngOnInit(): void {
+    this.trigerAnimation(() => (this.isOpen = !this.isOpen), 0);
+    this.getProject();
+  }
+
+  getProject() {
+    this.invoiceService
+      .getProjects()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((res) => (this.projectLists = res));
   }
 
   trigerAnimation(callback: any, duration: number = 0) {
     setTimeout(callback, duration);
+  }
+
+  getEmployeeRate(workingHoursObj: IWorkingHours): number {
+    const employeeId = workingHoursObj.employeeFullName.id;
+    const taskId = workingHoursObj.taskNameAndId.id;
+    return (
+      this.rates.value?.find(
+        (el: IEmployeeRate) => el.id === employeeId && el.taskId === taskId
+      )?.rate ?? 0
+    );
+  }
+
+  generateProjectHours() {
+    if (this.newInvoiceForm.invalid) {
+      return this.newInvoiceForm.markAllAsTouched();
+    }
+
+    this.invoiceService
+      .generateProjectHours(this.calculateBody)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((res: IWorkingHours[]) => {
+        this.generated = Boolean(res.length);
+        this.dataCert = [...res];
+      });
+  }
+
+  transformBillableHoursToNumber(billableHours: string): number {
+    const [hours, minutes] = billableHours.split(':');
+    return Number(hours) + Number(minutes) / 60;
+  }
+
+  save() {
+    if (this.isFormInvalid) {
+      return this.newInvoiceForm.markAllAsTouched();
+    }
+    this.cancel(this.modalBody);
   }
 
   cancel(body?: IInvoiceBody) {

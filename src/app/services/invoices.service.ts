@@ -1,9 +1,15 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, TransferState } from '@angular/core';
 import { Observable, tap } from 'rxjs';
-import { IInvoice, IInvoiceBody } from '../interfaces/invoice.interface';
+import {
+  ICalculateHoursBody,
+  IInvoice,
+  IInvoiceBody,
+} from '../interfaces/invoice.interface';
 import { envStateKey } from '../app.config.server';
 import { NotifyService } from './notify.service';
+import { IWorkingHours } from '../interfaces/working-hours.interface';
+import { IProject } from '../interfaces/project.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -20,13 +26,24 @@ export class InvoicesService {
   }
 
   createInvoices(body: IInvoiceBody): Observable<unknown> {
-    return this.http.post(`${this.apiPath}/sdk-finance/invoice?customerId=${body.customerId}&end=${body.endDate}&start=${body.startDate}`, body).pipe(
+    return this.http.post(`${this.apiPath}/sdk-finance/invoice`, body).pipe(
       tap(() =>
         this.notifier.notifySub.next({
           type: 'success',
           message: 'Invoice was created',
         })
       )
+    );
+  }
+
+  getProjects(): Observable<IProject[]> {
+    return this.http.get<IProject[]>(`${this.apiPath}/sdk-finance/projects`);
+  }
+
+  generateProjectHours(body: ICalculateHoursBody): Observable<IWorkingHours[]> {
+    return this.http.post<IWorkingHours[]>(
+      `${this.apiPath}/sdk-finance/invoice/calculate`,
+      body
     );
   }
 
