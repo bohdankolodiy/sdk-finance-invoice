@@ -220,6 +220,8 @@ export class CreateInvoiceModalComponent implements OnInit {
       return this.newInvoiceForm.markAllAsTouched();
     }
 
+    this.resetWorkingHours();
+
     this.invoiceService
       .generateProjectHours(this.calculateBody)
       .pipe(takeUntilDestroyed(this.destroyRef))
@@ -227,6 +229,11 @@ export class CreateInvoiceModalComponent implements OnInit {
         this.generated = Boolean(res.length);
         this.dataCert = [...res];
       });
+  }
+
+  resetWorkingHours() {
+    this.generated = false;
+    this.dataCert = [];
   }
 
   transformBillableHoursToNumber(billableHours: string): number {
