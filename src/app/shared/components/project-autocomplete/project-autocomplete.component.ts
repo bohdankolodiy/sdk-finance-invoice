@@ -13,6 +13,8 @@ import { MatInputModule } from '@angular/material/input';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { filter, map, Observable, startWith } from 'rxjs';
 import { IProject } from '../../../interfaces/project.interface';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
   selector: 'app-project-autocomplete',
@@ -24,6 +26,8 @@ import { IProject } from '../../../interfaces/project.interface';
     MatAutocompleteModule,
     ReactiveFormsModule,
     AsyncPipe,
+    MatIconModule,
+    MatButtonModule,
   ],
   templateUrl: './project-autocomplete.component.html',
   styleUrl: './project-autocomplete.component.scss',
@@ -49,7 +53,7 @@ export class ProjectAutocompleteComponent
       this.filteredOptions = this.projectControl.valueChanges.pipe(
         startWith(''),
         map((value: any) =>
-          this._filter((typeof value === 'object' ? value.name : value) || '')
+          this._filter((typeof value === 'object' ? value?.name : value) || '')
         )
       );
   }
