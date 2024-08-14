@@ -195,15 +195,13 @@ export class CreateInvoiceModalComponent implements OnInit {
   ngOnInit(): void {
     this.trigerAnimation(() => (this.isOpen = !this.isOpen), 0);
     this.getProject();
-    this.subscribeToFormChanges();
+    this.subscribeToProjectChanges();
   }
 
-  subscribeToFormChanges() {
-    this.newInvoiceForm.valueChanges
-      .pipe(debounceTime(300))
-      .subscribe((res) => {
-        this.resetWorkingHours();
-      });
+  subscribeToProjectChanges() {
+    this.project.valueChanges.pipe(debounceTime(300)).subscribe(() => {
+      this.resetWorkingHours();
+    });
   }
 
   getProject() {
