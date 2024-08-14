@@ -19,18 +19,14 @@
           class="label-input mb-3"
           appMarkAsterisk
           [formGroup]="newInvoiceForm"
-          [controlName]="'startDate'"
-          [touched]="newInvoiceForm.get('startDate')!.touched"
+          [controlName]="'project'"
+          [touched]="newInvoiceForm.get('project')!.touched"
           >Project
         </label>
-        <mat-form-field>
-          <mat-label>Choose the project</mat-label>
-          <mat-select formControlName="project">
-            @for (project of projectLists; track project) {
-            <mat-option [value]="project">{{ project.name }}</mat-option>
-            }
-          </mat-select>
-        </mat-form-field>
+        <app-project-autocomplete
+          [projectList]="projectLists"
+          formControlName="project"
+        ></app-project-autocomplete>
       </div>
       <div class="row align-items-center index-z">
         <label
@@ -81,21 +77,25 @@
           <mat-datepicker #endPicker></mat-datepicker>
         </mat-form-field>
       </div>
+      @if (generated && !dataCert.length) {
+      <div class="row mt-4 justify-content-center align-items-center">
+        <p class="col-auto p-0 m-0 no-generate">There is no generated Hours</p>
+      </div>
+      }
+
       <div class="row justify-content-center align-items-center index-z mt-4">
-        <div class="col-auto p-0 align-items-center">
-          <button
-            class="button button__createInvoice employees__button"
-            (click)="generateProjectHours()"
-            matTooltip="For generation working hours fill all fields"
-            matTooltipPosition="above"
-          >
-            Generate working hours
-          </button>
-        </div>
+        <button
+          class="button button__createInvoice employees__button col-auto align-items-center"
+          (click)="generateProjectHours()"
+          matTooltip="For generation working hours fill all fields"
+          matTooltipPosition="above"
+        >
+          Generate working hours
+        </button>
       </div>
     </div>
 
-    @if (generated) {
+    @if (generated && dataCert.length) {
     <div class="w-100 working-hours__table mt-4" #tableWrapper>
       <app-working-hours-table
         [headers]="headersCert"
@@ -105,12 +105,8 @@
       </app-working-hours-table>
     </div>
 
-    <div class="w-100 mb-3 d-flex align-items-start">
-      <p><strong>Total: </strong>{{ total }}</p>
-    </div>
-    } @else {
-    <div class="row mt-6 justify-content-center align-items-center no-generate">
-      <p class="col-auto p-0">There is no generated Hours</p>
+    <div class="w-100 d-flex align-items-start">
+      <p class="m-0"><strong>Total: </strong>{{ total }}</p>
     </div>
     }
   </div>

@@ -15,7 +15,6 @@
   width: 100%;
   padding: 20px;
   @include flex-box(column, nowrap, space-between, center);
-  transition: height 0.6s ease-in-out;
 
   .dialog-content__container {
     border: unset;
@@ -37,11 +36,11 @@
 
 .working-hours__table {
   overflow-y: auto;
-  height: 300px;
+  height: 280px;
 }
 
 .no-generate {
-  height: 100px;
+    font-size: 14px
 }
 
 .error {

@@ -1,0 +1,20 @@
+<mat-form-field class="w-100">
+  <mat-label>Choose the project</mat-label>
+  <input
+    type="text"
+    matInput
+    [formControl]="projectControl"
+    [matAutocomplete]="projectAutocomplete"
+  />
+  <mat-autocomplete
+    #projectAutocomplete="matAutocomplete"
+    [autoSelectActiveOption]="true"
+    [displayWith]="displayFn"
+  >
+    @for (option of filteredOptions | async; track option) {
+    <mat-option [value]="option" (click)="chooseProject(option)">{{
+      option.name
+    }}</mat-option>
+    }
+  </mat-autocomplete>
+</mat-form-field>

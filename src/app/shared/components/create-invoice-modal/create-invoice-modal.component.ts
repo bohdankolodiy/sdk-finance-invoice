@@ -43,6 +43,8 @@ import {
 import { WorkingHoursTableComponent } from './working-hours-table/working-hours-table.component';
 import { IProject } from '../../../interfaces/project.interface';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { ProjectAutocompleteComponent } from '../project-autocomplete/project-autocomplete.component';
+import { debounceTime } from 'rxjs';
 
 export const MY_FORMATS = {
   parse: {
@@ -73,6 +75,7 @@ export const MY_FORMATS = {
     MatSelectModule,
     MatTooltipModule,
     WorkingHoursTableComponent,
+    ProjectAutocompleteComponent,
   ],
   templateUrl: './create-invoice-modal.component.html',
   styleUrl: './create-invoice-modal.component.scss',
@@ -192,6 +195,15 @@ export class CreateInvoiceModalComponent implements OnInit {
   ngOnInit(): void {
     this.trigerAnimation(() => (this.isOpen = !this.isOpen), 0);
     this.getProject();
+    this.subscribeToFormChanges();
+  }
+
+  subscribeToFormChanges() {
+    this.newInvoiceForm.valueChanges
+      .pipe(debounceTime(300))
+      .subscribe((res) => {
+        this.resetWorkingHours();
+      });
   }
 
   getProject() {
@@ -226,7 +238,7 @@ export class CreateInvoiceModalComponent implements OnInit {
       .generateProjectHours(this.calculateBody)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((res: IWorkingHours[]) => {
-        this.generated = Boolean(res.length);
+        this.generated = true;
         this.dataCert = [...res];
       });
   }
