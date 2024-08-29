@@ -11,7 +11,13 @@ import {
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
-import { filter, map, Observable, startWith } from 'rxjs';
+import {
+  debounceTime,
+  distinctUntilChanged,
+  map,
+  Observable,
+  startWith,
+} from 'rxjs';
 import { IProject } from '../../../interfaces/project.interface';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
@@ -60,8 +66,10 @@ export class ProjectAutocompleteComponent
 
   ngOnInit(): void {
     this.projectControl.valueChanges
-      .pipe(filter((res) => !res))
-      .subscribe((res) => this.onChange(res));
+      .pipe(debounceTime(300), distinctUntilChanged())
+      .subscribe((res) => {
+        this.onChange(res);
+      });
   }
 
   private _filter(value: string): IProject[] {

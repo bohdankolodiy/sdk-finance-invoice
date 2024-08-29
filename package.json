@@ -7,7 +7,8 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "serve:ssr:sdk-finance-invoice": "node dist/sdk-finance-invoice/server/server.mjs"
+    "serve:ssr:sdk-finance-invoice": "node dist/sdk-finance-invoice/server/server.mjs",
+    "deploy": "ng deploy --repo=https://github.com/bohdankolodiy/sdk-finance-invoice"
   },
   "private": true,
   "dependencies": {

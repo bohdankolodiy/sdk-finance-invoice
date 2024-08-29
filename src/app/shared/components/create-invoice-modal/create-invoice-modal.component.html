@@ -14,7 +14,7 @@
 
   <div class="dialog-content__container w-100" [formGroup]="newInvoiceForm">
     <div>
-      <div class="row align-items-center index-z">
+      <div class="row align-items-center index-z mb-4">
         <label
           class="label-input mb-3"
           appMarkAsterisk
@@ -27,8 +27,15 @@
           [projectList]="projectLists"
           formControlName="project"
         ></app-project-autocomplete>
+        @if (project.hasError('notSelected')) {
+        <div class="error">
+          <span class="error__message">{{
+            "Please choose project from the list"
+          }}</span>
+        </div>
+        }
       </div>
-      <div class="row align-items-center index-z">
+      <div class="row align-items-center index-z mb-4">
         <label
           class="label-input mb-3"
           appMarkAsterisk

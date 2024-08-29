@@ -117,7 +117,10 @@ export class CreateInvoiceModalComponent implements OnInit {
   public newInvoiceForm: FormGroup = new FormGroup({
     startDate: new FormControl<Date | null>(null, [Validators.required]),
     endDate: new FormControl<Date | null>(null, [Validators.required]),
-    project: new FormControl(null, [Validators.required]),
+    project: new FormControl(null, [
+      Validators.required,
+      this.isProjectSelect(),
+    ]),
     rates: new FormControl(),
   });
 
@@ -249,6 +252,12 @@ export class CreateInvoiceModalComponent implements OnInit {
   transformBillableHoursToNumber(billableHours: string): number {
     const [hours, minutes] = billableHours.split(':');
     return Number(hours) + Number(minutes) / 60;
+  }
+
+  isProjectSelect() {
+    return (control: AbstractControl) => {
+      return typeof control?.value === 'object' ? null : { notSelected: true };
+    };
   }
 
   save() {
