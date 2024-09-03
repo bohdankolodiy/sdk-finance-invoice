@@ -10,6 +10,7 @@ export interface IInvoiceBody {
   start: string;
   end: string;
   projectId: number;
+  email: string;
   employeeRate: any;
 }
 

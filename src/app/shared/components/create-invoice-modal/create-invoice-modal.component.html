@@ -27,10 +27,35 @@
           [projectList]="projectLists"
           formControlName="project"
         ></app-project-autocomplete>
-        @if (project.hasError('notSelected')) {
+        @if (project.invalid) {
         <div class="error">
           <span class="error__message">{{
             "Please choose project from the list"
+          }}</span>
+        </div>
+        }
+      </div>
+      <div class="row align-items-center index-z mb-4">
+        <label
+          class="label-input mb-3"
+          appMarkAsterisk
+          [formGroup]="newInvoiceForm"
+          [controlName]="'projectEmail'"
+          [touched]="newInvoiceForm.get('projectEmail')!.touched"
+          >Email
+        </label>
+        <mat-form-field>
+          <mat-label>Select email from the list</mat-label>
+          <mat-select formControlName="projectEmail">
+            @for (email of emailsLists; track email) {
+            <mat-option [value]="email">{{ email }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+        @if (!project.value) {
+        <div class="error">
+          <span class="error__message">{{
+            "Please choose project first "
           }}</span>
         </div>
         }

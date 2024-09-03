@@ -15,6 +15,7 @@ import { IProject } from '../interfaces/project.interface';
   providedIn: 'root',
 })
 export class InvoicesService {
+  private readonly urlPath: string = 'sdk-finance/invoice';
   constructor(
     private http: HttpClient,
     private transferState: TransferState,
@@ -22,11 +23,11 @@ export class InvoicesService {
   ) {}
 
   getInvoices(): Observable<IInvoice[]> {
-    return this.http.get<IInvoice[]>(`${this.apiPath}/sdk-finance/invoice`);
+    return this.http.get<IInvoice[]>(`${this.apiPath}/${this.urlPath}`);
   }
 
   createInvoices(body: IInvoiceBody): Observable<unknown> {
-    return this.http.post(`${this.apiPath}/sdk-finance/invoice`, body).pipe(
+    return this.http.post(`${this.apiPath}/${this.urlPath}`, body).pipe(
       tap(() =>
         this.notifier.notifySub.next({
           type: 'success',
@@ -40,9 +41,15 @@ export class InvoicesService {
     return this.http.get<IProject[]>(`${this.apiPath}/sdk-finance/projects`);
   }
 
+  getProjectEmails(projectId: number): Observable<string[]> {
+    return this.http.get<string[]>(
+      `${this.apiPath}/sdk-finance/projects/${projectId}/emails`
+    );
+  }
+
   generateProjectHours(body: ICalculateHoursBody): Observable<IWorkingHours[]> {
     return this.http.post<IWorkingHours[]>(
-      `${this.apiPath}/sdk-finance/invoice/calculate`,
+      `${this.apiPath}/${this.urlPath}/calculate`,
       body
     );
   }

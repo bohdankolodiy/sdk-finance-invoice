@@ -103,6 +103,7 @@ export const MY_FORMATS = {
 export class CreateInvoiceModalComponent implements OnInit {
   public isOpen: boolean = false;
   public projectLists: IProject[] = [];
+  public emailsLists: string[] = [];
   public generated: boolean = false;
 
   public headersCert: UITableHeader[] = [
@@ -121,6 +122,7 @@ export class CreateInvoiceModalComponent implements OnInit {
       Validators.required,
       this.isProjectSelect(),
     ]),
+    projectEmail: new FormControl<string | null>(null, [Validators.required]),
     rates: new FormControl(),
   });
 
@@ -140,6 +142,10 @@ export class CreateInvoiceModalComponent implements OnInit {
     return this.newInvoiceForm.get('rates')!;
   }
 
+  get projectEmail(): AbstractControl {
+    return this.newInvoiceForm.get('projectEmail')!;
+  }
+
   get modalBody(): IInvoiceBody {
     const result = this.rates.value.reduce((acc: any, item: IEmployeeRate) => {
       acc[item.id] = Number(item.rate);
@@ -149,6 +155,7 @@ export class CreateInvoiceModalComponent implements OnInit {
       start: Utils.formatDateToString([new Date(this.startDate.value)])!,
       end: Utils.formatDateToString([new Date(this.endDate.value)])!,
       projectId: this.project.value.id,
+      email: this.projectEmail.value,
       employeeRate: {
         ...result,
       },
@@ -204,6 +211,8 @@ export class CreateInvoiceModalComponent implements OnInit {
   subscribeToProjectChanges() {
     this.project.valueChanges.pipe(debounceTime(300)).subscribe(() => {
       this.resetWorkingHours();
+      this.resetProjectEmail();
+      if (this.project.value?.id) this.getProjectEmails();
     });
   }
 
@@ -212,6 +221,13 @@ export class CreateInvoiceModalComponent implements OnInit {
       .getProjects()
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((res) => (this.projectLists = res));
+  }
+
+  getProjectEmails() {
+    this.invoiceService
+      .getProjectEmails(this.project.value.id)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((res) => (this.emailsLists = res));
   }
 
   trigerAnimation(callback: any, duration: number = 0) {
@@ -247,6 +263,11 @@ export class CreateInvoiceModalComponent implements OnInit {
   resetWorkingHours() {
     this.generated = false;
     this.dataCert = [];
+  }
+
+  resetProjectEmail() {
+    this.projectEmail.reset();
+    this.emailsLists = [];
   }
 
   transformBillableHoursToNumber(billableHours: string): number {
