@@ -44,19 +44,14 @@
           [touched]="newInvoiceForm.get('projectEmail')!.touched"
           >Email
         </label>
-        <mat-form-field>
-          <mat-label>Select email from the list</mat-label>
-          <mat-select formControlName="projectEmail">
-            @for (email of emailsLists; track email) {
-            <mat-option [value]="email">{{ email }}</mat-option>
-            }
-          </mat-select>
-        </mat-form-field>
-        @if (!project.value) {
+        <app-email-autocomplete
+          [emailList]="emailsLists"
+          [isDisable]="this.projectEmail.disabled"
+          formControlName="projectEmail"
+        ></app-email-autocomplete>
+        @if (projectEmail.hasError('email')) {
         <div class="error">
-          <span class="error__message">{{
-            "Please choose project first "
-          }}</span>
+          <span class="error__message">{{ "Please write correct email" }}</span>
         </div>
         }
       </div>

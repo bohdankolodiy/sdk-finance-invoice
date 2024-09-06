@@ -45,6 +45,7 @@ import { IProject } from '../../../interfaces/project.interface';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ProjectAutocompleteComponent } from '../project-autocomplete/project-autocomplete.component';
 import { debounceTime } from 'rxjs';
+import { EmailAutocompleteComponent } from '../email-autocomplete/email-autocomplete.component';
 
 export const MY_FORMATS = {
   parse: {
@@ -76,6 +77,7 @@ export const MY_FORMATS = {
     MatTooltipModule,
     WorkingHoursTableComponent,
     ProjectAutocompleteComponent,
+    EmailAutocompleteComponent,
   ],
   templateUrl: './create-invoice-modal.component.html',
   styleUrl: './create-invoice-modal.component.scss',
@@ -122,7 +124,10 @@ export class CreateInvoiceModalComponent implements OnInit {
       Validators.required,
       this.isProjectSelect(),
     ]),
-    projectEmail: new FormControl<string | null>(null, [Validators.required]),
+    projectEmail: new FormControl<string | null>(null, [
+      Validators.required,
+      Validators.email,
+    ]),
     rates: new FormControl(),
   });
 
@@ -206,13 +211,19 @@ export class CreateInvoiceModalComponent implements OnInit {
     this.trigerAnimation(() => (this.isOpen = !this.isOpen), 0);
     this.getProject();
     this.subscribeToProjectChanges();
+    this.setEmailDisable();
+  }
+
+  setEmailDisable() {
+    this.projectEmail.disable();
   }
 
   subscribeToProjectChanges() {
-    this.project.valueChanges.pipe(debounceTime(300)).subscribe(() => {
+    this.project.valueChanges.pipe(debounceTime(300)).subscribe((value) => {
       this.resetWorkingHours();
       this.resetProjectEmail();
-      if (this.project.value?.id) this.getProjectEmails();
+      this.projectEmail[value ? 'enable' : 'disable']();
+      if (value?.id) this.getProjectEmails();
     });
   }
 
@@ -230,7 +241,7 @@ export class CreateInvoiceModalComponent implements OnInit {
       .subscribe((res) => (this.emailsLists = res));
   }
 
-  trigerAnimation(callback: any, duration: number = 0) {
+  trigerAnimation(callback: () => void, duration: number = 0) {
     setTimeout(callback, duration);
   }
 
