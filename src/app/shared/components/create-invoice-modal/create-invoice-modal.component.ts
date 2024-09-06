@@ -43,6 +43,9 @@ import {
 import { WorkingHoursTableComponent } from './working-hours-table/working-hours-table.component';
 import { IProject } from '../../../interfaces/project.interface';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { ProjectAutocompleteComponent } from '../project-autocomplete/project-autocomplete.component';
+import { debounceTime } from 'rxjs';
+import { EmailAutocompleteComponent } from '../email-autocomplete/email-autocomplete.component';
 
 export const MY_FORMATS = {
   parse: {
@@ -73,6 +76,8 @@ export const MY_FORMATS = {
     MatSelectModule,
     MatTooltipModule,
     WorkingHoursTableComponent,
+    ProjectAutocompleteComponent,
+    EmailAutocompleteComponent,
   ],
   templateUrl: './create-invoice-modal.component.html',
   styleUrl: './create-invoice-modal.component.scss',
@@ -100,6 +105,7 @@ export const MY_FORMATS = {
 export class CreateInvoiceModalComponent implements OnInit {
   public isOpen: boolean = false;
   public projectLists: IProject[] = [];
+  public emailsLists: string[] = [];
   public generated: boolean = false;
 
   public headersCert: UITableHeader[] = [
@@ -114,7 +120,14 @@ export class CreateInvoiceModalComponent implements OnInit {
   public newInvoiceForm: FormGroup = new FormGroup({
     startDate: new FormControl<Date | null>(null, [Validators.required]),
     endDate: new FormControl<Date | null>(null, [Validators.required]),
-    project: new FormControl(null, [Validators.required]),
+    project: new FormControl(null, [
+      Validators.required,
+      this.isProjectSelect(),
+    ]),
+    projectEmail: new FormControl<string | null>(null, [
+      Validators.required,
+      Validators.email,
+    ]),
     rates: new FormControl(),
   });
 
@@ -134,6 +147,10 @@ export class CreateInvoiceModalComponent implements OnInit {
     return this.newInvoiceForm.get('rates')!;
   }
 
+  get projectEmail(): AbstractControl {
+    return this.newInvoiceForm.get('projectEmail')!;
+  }
+
   get modalBody(): IInvoiceBody {
     const result = this.rates.value.reduce((acc: any, item: IEmployeeRate) => {
       acc[item.id] = Number(item.rate);
@@ -143,6 +160,7 @@ export class CreateInvoiceModalComponent implements OnInit {
       start: Utils.formatDateToString([new Date(this.startDate.value)])!,
       end: Utils.formatDateToString([new Date(this.endDate.value)])!,
       projectId: this.project.value.id,
+      email: this.projectEmail.value,
       employeeRate: {
         ...result,
       },
@@ -192,6 +210,21 @@ export class CreateInvoiceModalComponent implements OnInit {
   ngOnInit(): void {
     this.trigerAnimation(() => (this.isOpen = !this.isOpen), 0);
     this.getProject();
+    this.subscribeToProjectChanges();
+    this.setEmailDisable();
+  }
+
+  setEmailDisable() {
+    this.projectEmail.disable();
+  }
+
+  subscribeToProjectChanges() {
+    this.project.valueChanges.pipe(debounceTime(300)).subscribe((value) => {
+      this.resetWorkingHours();
+      this.resetProjectEmail();
+      this.projectEmail[value ? 'enable' : 'disable']();
+      if (value?.id) this.getProjectEmails();
+    });
   }
 
   getProject() {
@@ -201,7 +234,14 @@ export class CreateInvoiceModalComponent implements OnInit {
       .subscribe((res) => (this.projectLists = res));
   }
 
-  trigerAnimation(callback: any, duration: number = 0) {
+  getProjectEmails() {
+    this.invoiceService
+      .getProjectEmails(this.project.value.id)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((res) => (this.emailsLists = res));
+  }
+
+  trigerAnimation(callback: () => void, duration: number = 0) {
     setTimeout(callback, duration);
   }
 
@@ -220,18 +260,36 @@ export class CreateInvoiceModalComponent implements OnInit {
       return this.newInvoiceForm.markAllAsTouched();
     }
 
+    this.resetWorkingHours();
+
     this.invoiceService
       .generateProjectHours(this.calculateBody)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((res: IWorkingHours[]) => {
-        this.generated = Boolean(res.length);
+        this.generated = true;
         this.dataCert = [...res];
       });
+  }
+
+  resetWorkingHours() {
+    this.generated = false;
+    this.dataCert = [];
+  }
+
+  resetProjectEmail() {
+    this.projectEmail.reset();
+    this.emailsLists = [];
   }
 
   transformBillableHoursToNumber(billableHours: string): number {
     const [hours, minutes] = billableHours.split(':');
     return Number(hours) + Number(minutes) / 60;
+  }
+
+  isProjectSelect() {
+    return (control: AbstractControl) => {
+      return typeof control?.value === 'object' ? null : { notSelected: true };
+    };
   }
 
   save() {

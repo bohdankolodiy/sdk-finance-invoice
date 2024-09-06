@@ -1,0 +1,28 @@
+<mat-form-field class="w-100">
+  <mat-label>Choose the project</mat-label>
+  <input
+    type="text"
+    matInput
+    [formControl]="emailControl"
+    [matAutocomplete]="projectAutocomplete"
+  />
+  @if (emailControl.value) {
+  <button
+    matSuffix
+    mat-icon-button
+    aria-label="Clear"
+    (click)="emailControl.reset()"
+  >
+    <mat-icon>close</mat-icon>
+  </button>
+  }
+  <mat-autocomplete
+    #projectAutocomplete="matAutocomplete"
+    [autoSelectActiveOption]="true"
+    [displayWith]="displayFn"
+  >
+    @for (option of filteredOptions | async; track option) {
+    <mat-option [value]="option">{{ option }}</mat-option>
+    }
+  </mat-autocomplete>
+</mat-form-field>

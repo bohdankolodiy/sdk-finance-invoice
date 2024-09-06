@@ -49,7 +49,7 @@ export class InvoicesComponent implements OnInit {
     this.invoicesService
       .getInvoices()
       .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe((res) => { 
+      .subscribe((res) => {
         this.dataCert = res;
       });
   }
@@ -59,6 +59,7 @@ export class InvoicesComponent implements OnInit {
       .open(CreateInvoiceModalComponent, {
         width: '250px',
         disableClose: true,
+        autoFocus: false,
       })
       .afterClosed()
       .pipe(
