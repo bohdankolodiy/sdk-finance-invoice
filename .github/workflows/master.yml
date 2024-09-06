@@ -1,4 +1,4 @@
-name: Build and Deploy Angular to GitHub Pages
+name: Deploy Angular to GitHub Pages
 
 on:
   push:
@@ -10,7 +10,7 @@ permissions:
   pages: write     # Required to deploy to GitHub Pages
 
 jobs:
-  build:
+  build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
@@ -26,36 +26,9 @@ jobs:
       run: npm ci  # Use 'ci' for clean install
 
     - name: Build the Angular app
-      run: npm run build -- --base-href="/sdk-finance-invoice/"
+      run: npm run build -- --base-href="/sdk-finance-invoice/"  # Adjust base-href if necessary
       env:
         CI: true
-
-    - name: Upload build artifacts
-      uses: actions/upload-artifact@v3
-      with:
-        name: build
-        path: dist/sdk-finance-invoice
-
-  deploy:
-    runs-on: ubuntu-latest
-    needs: build  # Ensure this job runs after the build job
-
-    steps:
-    - name: Checkout the repository
-      uses: actions/checkout@v3
-
-    - name: Download build artifacts
-      uses: actions/download-artifact@v3
-      with:
-        name: build
-
-    - name: Set up Node.js
-      uses: actions/setup-node@v3
-      with:
-        node-version: '18'
-
-    - name: Install Angular CLI
-      run: npm install -g @angular/cli
 
     - name: Configure Git
       run: |
@@ -63,6 +36,6 @@ jobs:
         git config --global user.email "b.kolodiy@binariks.com"
 
     - name: Deploy to GitHub Pages
-      run: ng deploy --base-href="/sdk-finance-invoice/"
+      run: npm run deploy:ci
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # GitHub token for authentication
