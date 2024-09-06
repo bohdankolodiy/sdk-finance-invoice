@@ -49,12 +49,20 @@ jobs:
       with:
         name: build
 
+    - name: Set up Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+
+    - name: Install Angular CLI
+      run: npm install -g @angular/cli
+
     - name: Configure Git
       run: |
         git config --global user.name "bohdankolodiy"
         git config --global user.email "b.kolodiy@binariks.com"
 
     - name: Deploy to GitHub Pages
-      run: npm run deploy:ci
+      run: ng deploy --base-href="/sdk-finance-invoice/"
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
