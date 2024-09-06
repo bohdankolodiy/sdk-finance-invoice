@@ -55,6 +55,6 @@ jobs:
         git config --global user.email "b.kolodiy@binariks.com"
 
     - name: Deploy to GitHub Pages
-      run: npm run build:ci
+      run: npm run deploy:ci
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
